@@ -170,7 +170,8 @@
 #![feature(marker_trait_attr)]
 #![feature(min_specialization)]
 #![feature(multiple_supertrait_upcastable)]
-#![cfg_attr(not(feature = "ferrocene_certified"), feature(must_not_suspend))]
+// #![cfg_attr(not(feature = "ferrocene_certified"), feature(must_not_suspend))]
+#![feature(must_not_suspend)]
 #![feature(negative_impls)]
 #![feature(never_type)]
 #![feature(no_core)]
@@ -215,7 +216,7 @@
     feature = "ferrocene_certified",
     expect(rustdoc::broken_intra_doc_links),
     expect(rustdoc::private_intra_doc_links),
-    expect(unused_attributes),
+    expect(unused_attributes)
 )]
 #![feature(register_tool)]
 #![register_tool(ferrocene)]

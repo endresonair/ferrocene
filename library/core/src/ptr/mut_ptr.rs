@@ -28,7 +28,7 @@ impl<T: PointeeSized> *mut T {
     #[rustc_const_stable(feature = "const_ptr_is_null", since = "1.84.0")]
     #[rustc_diagnostic_item = "ptr_is_null"]
     #[inline]
-    #[cfg(not(feature = "ferrocene_certified"))]
+    // #[cfg(not(feature = "ferrocene_certified"))]
     pub const fn is_null(self) -> bool {
         self.cast_const().is_null()
     }
