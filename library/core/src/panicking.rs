@@ -310,18 +310,24 @@ fn panic_bounds_check(index: usize, len: usize) -> ! {
 #[track_caller]
 #[lang = "panic_misaligned_pointer_dereference"] // needed by codegen for panic on misaligned pointer deref
 #[rustc_nounwind] // `CheckAlignment` MIR pass requires this function to never unwind
-#[cfg(not(feature = "ferrocene_certified"))]
+#[cfg_attr(feature = "ferrocene_certified", allow(unused_variables))]
 fn panic_misaligned_pointer_dereference(required: usize, found: usize) -> ! {
     if cfg!(panic = "immediate-abort") {
         super::intrinsics::abort()
     }
 
+    #[cfg(not(feature = "ferrocene_certified"))]
     panic_nounwind_fmt(
         format_args!(
             "misaligned pointer dereference: address must be a multiple of {required:#x} but is {found:#x}"
         ),
         /* force_no_backtrace */ false,
-    )
+    );
+    #[cfg(feature = "ferrocene_certified")]
+    panic_nounwind_fmt(
+        &"misaligned pointer dereference: address must be a multiple of ? but is ?",
+        /* force_no_backtrace */ false,
+    );
 }
 
 #[cfg_attr(not(panic = "immediate-abort"), inline(never), cold, optimize(size))]
@@ -329,16 +335,18 @@ fn panic_misaligned_pointer_dereference(required: usize, found: usize) -> ! {
 #[track_caller]
 #[lang = "panic_null_pointer_dereference"] // needed by codegen for panic on null pointer deref
 #[rustc_nounwind] // `CheckNull` MIR pass requires this function to never unwind
-#[cfg(not(feature = "ferrocene_certified"))]
 fn panic_null_pointer_dereference() -> ! {
     if cfg!(panic = "immediate-abort") {
         super::intrinsics::abort()
     }
 
+    #[cfg(not(feature = "ferrocene_certified"))]
     panic_nounwind_fmt(
         format_args!("null pointer dereference occurred"),
         /* force_no_backtrace */ false,
-    )
+    );
+    #[cfg(feature = "ferrocene_certified")]
+    panic_nounwind_fmt(&"null pointer dereference occurred", /* force_no_backtrace */ false);
 }
 
 #[cfg_attr(not(panic = "immediate-abort"), inline(never), cold, optimize(size))]
